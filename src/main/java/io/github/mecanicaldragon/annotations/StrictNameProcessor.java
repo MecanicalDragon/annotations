@@ -1,8 +1,10 @@
-package net.medrag.annotations;
+package io.github.mecanicaldragon.annotations;
 
 import com.google.auto.service.AutoService;
 
-import javax.annotation.processing.*;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -10,6 +12,8 @@ import javax.tools.Diagnostic;
 import java.util.Set;
 
 /**
+ * Processor for {@link StrictName}.
+ *
  * @author Stanislav Tretyakov
  * 11.07.2022
  */
@@ -36,7 +40,8 @@ public class StrictNameProcessor extends AbstractProcessor {
                 final var requiredName = annotatedElement.getAnnotation(StrictName.class).value();
                 if (!simpleName.equals(requiredName)) {
                     final var type = annotatedElement.getKind().name();
-                    final var message = String.format("Compilation failed! %s <%s> must have @StrictName <%s>!", type, simpleName, requiredName);
+                    final var message =
+                        String.format("Compilation failed! %s <%s> must have @StrictName <%s>!", type, simpleName, requiredName);
                     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message);
                     throw new RuntimeException(message);
                 }
